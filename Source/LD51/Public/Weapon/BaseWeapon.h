@@ -77,4 +77,5 @@ private:
 
 
 public:	
+	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() { return WeaponMeshComponent; }
 };

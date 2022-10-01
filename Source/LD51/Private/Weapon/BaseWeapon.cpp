@@ -57,9 +57,23 @@ void ABaseWeapon::LaserShot()
 	
 }
 
-void ABaseWeapon::LauncherShot()
+void ABaseWeapon::LauncherShot(const FVector& HitTarget)
 {
-	
+	const USkeletalMeshSocket* MuzzleFlashSocket = GetWeaponMesh()->GetSocketByName(FName("MuzzleFlash"));
+
+	UWorld* World = GetWorld();
+	if (MuzzleFlashSocket && World)
+	{
+		FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
+		// From muzzle flash socket to HitTarget
+		FVector ToTarget = HitTarget - SocketTransform.GetLocation();
+		FRotator TargetRotation = ToTarget.Rotation();
+
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = GetOwner();
+
+		ABaseProjectile* SpawnedProjectile = World->SpawnActor<ABaseProjectile>(LauncherProjectile, SocketTransform.GetLocation(), TargetRotation, SpawnParams);
+	}
 }
 
 void ABaseWeapon::BurstShot()
