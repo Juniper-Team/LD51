@@ -39,8 +39,12 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 void UHealthComponent::OnTakeAnyDamageHandle(AActor* DamageActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
 	Health = FMath::Clamp(Health - Damage, 0.f, MaxHealth);
-	LastHitTime = GetWorld()->GetTimeSeconds();
-	bNeedAutoHealing = true;
+
+	if(EnableRegeneration)
+	{
+		LastHitTime = GetWorld()->GetTimeSeconds();
+		bNeedAutoHealing = true;
+	}
 
 	if (Health <= 0.f)
 	{
