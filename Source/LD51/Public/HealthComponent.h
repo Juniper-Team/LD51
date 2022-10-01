@@ -42,7 +42,7 @@ protected:
 	float LastHitTime = 0.f;
 
 	UFUNCTION()
-	void OnTakeAnyDamageHandle(AActor* DamageActor, float Damage, const UDamageType* DamageType,
+	virtual void OnTakeAnyDamageHandle(AActor* DamageActor, float Damage, const UDamageType* DamageType,
 			AController* InstigatedBy, AActor* DamageCauser);
 
 	UFUNCTION()
