@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Projectiles/BaseProjectile.h"
 #include "BaseWeapon.generated.h"
 
 class ABaseProjectile;
+class USkeletalMeshComponent;
 
 UENUM(BlueprintType)
 enum class EWeaponMode : uint8
@@ -31,7 +33,7 @@ public:
 	bool bIsActivated = false;
 
 	UPROPERTY()
-	EWeaponMode GunMode = EWeaponMode::EWM_Laser;
+	EWeaponMode GunMode;
 
 	UFUNCTION(BlueprintCallable)
 	void SetMode(EWeaponMode NewMode);
@@ -75,7 +77,9 @@ private:
 	float TimeBetweenShots = 10.f;
 	float TimeToNextShot;
 
+	FVector HitTarget;
 
 public:	
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() { return WeaponMeshComponent; }
+	FORCEINLINE void SetHitTarget (FVector NewHitTarget) { HitTarget = NewHitTarget; }
 };

@@ -23,10 +23,10 @@ public:
 	virtual void Destroyed() override;
 
 public: 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Damage = 100.f;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float InitialSpeed = 15000;
 
 protected:

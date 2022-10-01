@@ -2,6 +2,9 @@
 
 
 #include "Weapon/BaseWeapon.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Engine/SkeletalMeshSocket.h"
+
 
 // Sets default values
 ABaseWeapon::ABaseWeapon()
@@ -11,6 +14,8 @@ ABaseWeapon::ABaseWeapon()
 
 	WeaponMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WeaponMeshComponent"));
 	WeaponMeshComponent->SetupAttachment(GetRootComponent());
+
+	GunMode = EWeaponMode::EWM_Launcher;
 
 }
 
@@ -29,15 +34,16 @@ void ABaseWeapon::Tick(float DeltaTime)
 
 	if(!bIsActivated) return;
 	TimeToNextShot -= DeltaTime;
-	if(TimeToNextShot<= 0)
+	if(TimeToNextShot <= 0.f)
 	{
 		MakeShot();
+		TimeToNextShot = TimeBetweenShots;
 	}
 }
 
 void ABaseWeapon::MakeShot()
 {
-	if(!OwnerCharacter) return;
+	//if(!OwnerCharacter) return;
 	switch (GunMode)
 	{
 	case EWeaponMode::EWM_Laser:
@@ -57,7 +63,7 @@ void ABaseWeapon::LaserShot()
 	
 }
 
-void ABaseWeapon::LauncherShot(const FVector& HitTarget)
+void ABaseWeapon::LauncherShot()
 {
 	const USkeletalMeshSocket* MuzzleFlashSocket = GetWeaponMesh()->GetSocketByName(FName("MuzzleFlash"));
 
@@ -74,12 +80,14 @@ void ABaseWeapon::LauncherShot(const FVector& HitTarget)
 
 		ABaseProjectile* SpawnedProjectile = World->SpawnActor<ABaseProjectile>(LauncherProjectile, SocketTransform.GetLocation(), TargetRotation, SpawnParams);
 	}
+
 }
 
 void ABaseWeapon::BurstShot()
 {
 	
 }
+
 
 void ABaseWeapon::SetMode(EWeaponMode NewMode)
 {
