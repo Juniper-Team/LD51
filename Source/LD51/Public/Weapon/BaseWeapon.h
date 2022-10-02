@@ -9,6 +9,8 @@
 
 class ABaseProjectile;
 class USkeletalMeshComponent;
+class UStaticMeshComponent;
+class UNiagaraEmitter;
 
 UENUM(BlueprintType)
 enum class EWeaponMode : uint8
@@ -58,7 +60,16 @@ protected:
 	virtual void LaserShot();
 
 	UFUNCTION()
+	virtual void UpdateLaser();
+
+	UFUNCTION()
+	virtual void StopLaser();
+
+	UFUNCTION()
 	virtual void LauncherShot();
+
+	UFUNCTION()
+	void EnableLaser(bool value);
 
 	UFUNCTION()
 	virtual void BurstShot();
@@ -101,14 +112,42 @@ private:
 	UFUNCTION()
 	void AddCameraRecoilRotation(const FVector CameraRotation);
 
-	UPROPERTY();
+	UPROPERTY(EditAnywhere, Category = "BurstRecoil")
 	float MinXRecoil = 0.1f;
-	UPROPERTY();
+
+	UPROPERTY(EditAnywhere, Category = "BurstRecoil")
 	float MaxXRecoil = 0.2f;
-	UPROPERTY();
+
+	UPROPERTY(EditAnywhere, Category = "BurstRecoil")
 	float MinYRecoil = -0.1f;
-	UPROPERTY();
+
+	UPROPERTY(EditAnywhere, Category = "BurstRecoil")
 	float MaxYRecoil = 0.1f;
+
+private:
+	UPROPERTY(EditAnywhere, Category = "LaserBeam")
+	UStaticMeshComponent* LaserMesh;
+
+	UPROPERTY(EditAnywhere, Category = "LaserBeam")
+	float LaserDuration = 2.f;
+	float LaserTimerRemain = 0.f;
+
+	UPROPERTY(EditAnywhere, Category = "LaserBeam")
+	float LaserWidth = 2.f;
+
+	UPROPERTY(EditAnywhere, Category = "LaserBeam")
+	float LaserDamage = 100.f;
+
+	bool bUpdateLaser = false;
+
+	UPROPERTY(EditAnywhere, Category = "LaserBeam")
+	UNiagaraEmitter* LaserBeamEffect;
+
+	UFUNCTION(BlueprintCallable)
+	float GetLaserDamgae();
+	
+private:
+
 
 public:	
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() { return WeaponMeshComponent; }

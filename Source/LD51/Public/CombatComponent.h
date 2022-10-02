@@ -36,7 +36,7 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	void TraceUnderCrosshairs(FHitResult& TraceHitResult);
+	void TraceUnderCrosshairs(FHitResult& TraceHitResult, ECollisionChannel TraceChannel);
 
 	ABaseWeapon* EquippedWeapon;
 	ACharacter* OwnerCharacter;
