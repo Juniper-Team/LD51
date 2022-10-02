@@ -8,8 +8,10 @@
 
 class UBoxComponent;
 class UProjectileMovementComponent;
-class UParticleSystem;
-class UParticleSystemComponent;
+//class UParticleSystem;
+class UNiagaraSystem;
+class UNiagaraComponent;
+//class UParticleSystemComponent;
 class USoundCue;
 
 UCLASS()
@@ -47,12 +49,14 @@ private:
 	UBoxComponent* CollisionBox;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* Tracer;
+	UNiagaraSystem*	Tracer;
+	//UParticleSystem* Tracer;
 
-	UParticleSystemComponent* TracerComponent;
+	UNiagaraComponent* TracerComponent;
+	//UParticleSystemComponent* TracerComponent;
 
 	UPROPERTY(EditAnywhere)
-	UParticleSystem* ImpactParticles;
+	UNiagaraSystem* ImpactParticles;
 
 	UPROPERTY(EditAnywhere)
 	USoundCue* ImpactSound;
