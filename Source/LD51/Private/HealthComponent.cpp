@@ -48,7 +48,7 @@ void UHealthComponent::OnTakeAnyDamageHandle(AActor* DamageActor, float Damage, 
 
 	if (Health <= 0.f)
 	{
-		//???
+        GetOwner()->Destroy();
 	}
 }
 
