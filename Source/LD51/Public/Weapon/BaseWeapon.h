@@ -140,8 +140,8 @@ private:
 
 	bool bUpdateLaser = false;
 
-	UPROPERTY(EditAnywhere, Category = "LaserBeam")
-	UNiagaraEmitter* LaserBeamEffect;
+	//UPROPERTY(EditAnywhere, Category = "LaserBeam")
+	//UNiagaraEmitter* LaserBeamEffect;
 
 	UFUNCTION(BlueprintCallable)
 	float GetLaserDamgae();

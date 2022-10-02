@@ -122,6 +122,7 @@ void ABaseWeapon::EnableLaser(bool value)
 	if(value)
 	{
 		LaserMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+		//LaserBeamEffect->
 	}
 	else
 	{
