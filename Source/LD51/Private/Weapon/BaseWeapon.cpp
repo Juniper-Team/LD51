@@ -4,6 +4,8 @@
 #include "Weapon/BaseWeapon.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include <GameFramework/Pawn.h>
+#include "GameFramework/Character.h"
 
 
 // Sets default values
@@ -24,7 +26,6 @@ void ABaseWeapon::BeginPlay()
 {
 	Super::BeginPlay();
 	TimeToNextShot = TimeBetweenShots;
-	
 }
 
 // Called every frame
@@ -32,12 +33,12 @@ void ABaseWeapon::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(!bIsActivated) return;
-	TimeToNextShot -= DeltaTime;
+	if(!bIsActivated || bIsFiring) return;
+	TimeToNextShot = FMath::Clamp(TimeToNextShot-DeltaTime, 0.f, TimeBetweenShots);
 	if(TimeToNextShot <= 0.f)
 	{
+		bIsFiring = true;
 		MakeShot();
-		TimeToNextShot = TimeBetweenShots;
 	}
 }
 
@@ -65,6 +66,41 @@ void ABaseWeapon::LaserShot()
 
 void ABaseWeapon::LauncherShot()
 {
+	SpawnProjectile(LauncherProjectile, HitTarget);
+	TimeToNextShot = TimeBetweenShots;
+	bIsFiring = false;
+}
+
+void ABaseWeapon::BurstShot()
+{
+	
+	BulletsToShot = (int32)(ShotsPerSecond*BurstDuration);
+	ShotBullet();
+}
+
+
+void ABaseWeapon::ShotBullet()
+{
+	if(BulletsToShot <= 0)
+	{
+		bIsFiring = false;
+		TimeToNextShot = TimeBetweenShots;
+		return;
+	}
+	SpawnProjectile(BurstProjectile, HitTarget);
+	--BulletsToShot;
+	const FVector Recoil(FMath::RandRange(MinXRecoil, MaxXRecoil), FMath::RandRange(MinYRecoil, MaxYRecoil), 0.f);
+	AddCameraRecoilRotation(Recoil);
+	GetWorldTimerManager().SetTimer(
+		FireTimer,
+		this,
+		&ABaseWeapon::ShotBullet,
+		BurstDuration/ShotsPerSecond
+		);
+}
+
+void ABaseWeapon::SpawnProjectile(TSubclassOf<ABaseProjectile> ProjectileToSpawn, FVector HitDirection)
+{
 	const USkeletalMeshSocket* MuzzleFlashSocket = GetWeaponMesh()->GetSocketByName(FName("MuzzleFlash"));
 
 	UWorld* World = GetWorld();
@@ -72,22 +108,22 @@ void ABaseWeapon::LauncherShot()
 	{
 		FTransform SocketTransform = MuzzleFlashSocket->GetSocketTransform(GetWeaponMesh());
 		// From muzzle flash socket to HitTarget
-		FVector ToTarget = HitTarget - SocketTransform.GetLocation();
+		FVector ToTarget = HitDirection - SocketTransform.GetLocation();
 		FRotator TargetRotation = ToTarget.Rotation();
 
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = GetOwner();
 
-		ABaseProjectile* SpawnedProjectile = World->SpawnActor<ABaseProjectile>(LauncherProjectile, SocketTransform.GetLocation(), TargetRotation, SpawnParams);
+		ABaseProjectile* SpawnedProjectile = World->SpawnActor<ABaseProjectile>(ProjectileToSpawn, SocketTransform.GetLocation(), TargetRotation, SpawnParams);
 	}
-
 }
 
-void ABaseWeapon::BurstShot()
+void ABaseWeapon::AddCameraRecoilRotation(const FVector CameraRotation)
 {
-	
+	if(!OwnerCharacter) return;
+	OwnerCharacter->AddControllerPitchInput(-CameraRotation.X);
+	OwnerCharacter->AddControllerYawInput(CameraRotation.Y);
 }
-
 
 void ABaseWeapon::SetMode(EWeaponMode NewMode)
 {

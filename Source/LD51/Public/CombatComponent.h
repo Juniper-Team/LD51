@@ -29,6 +29,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void SetEquippedWeapon(ABaseWeapon* NewWeapon, USkeletalMeshComponent* AttachMesh, FName SocketName);
 
+	UFUNCTION(BlueprintCallable)
+	ABaseWeapon* GetEquippedWeapon();
+
 protected:
 	virtual void BeginPlay() override;
 

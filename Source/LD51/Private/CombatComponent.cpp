@@ -29,6 +29,7 @@ void UCombatComponent::SetEquippedWeapon(ABaseWeapon* NewWeapon, USkeletalMeshCo
 	if (WeaponSocket)
 	{
 		EquippedWeapon = NewWeapon;
+		EquippedWeapon->SetOwnerCharacter(OwnerCharacter);
 		WeaponSocket->AttachActor(NewWeapon, AttachMesh);
 		UE_LOG(LogTemp, Error, TEXT("Success!"));
 	}
@@ -36,6 +37,11 @@ void UCombatComponent::SetEquippedWeapon(ABaseWeapon* NewWeapon, USkeletalMeshCo
 	{
 		UE_LOG(LogTemp, Error, TEXT("Succ:("));
 	}
+}
+
+ABaseWeapon* UCombatComponent::GetEquippedWeapon()
+{
+	return EquippedWeapon;
 }
 
 void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)

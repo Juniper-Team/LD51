@@ -33,6 +33,9 @@ public:
 	bool bIsActivated = false;
 
 	UPROPERTY()
+	bool bIsFiring = false;
+
+	UPROPERTY()
 	EWeaponMode GunMode;
 
 	UFUNCTION(BlueprintCallable)
@@ -60,6 +63,12 @@ protected:
 	UFUNCTION()
 	virtual void BurstShot();
 
+	UFUNCTION()
+	void ShotBullet();
+
+	UFUNCTION()
+	virtual void SpawnProjectile(TSubclassOf<ABaseProjectile> ProjectileToSpawn, FVector HitDirection);
+
 protected:
 	UPROPERTY(EditAnywhere, Category = "Projectiles")
 	TSubclassOf <ABaseProjectile> BurstProjectile;
@@ -76,10 +85,34 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Shot Proprties")
 	float TimeBetweenShots = 10.f;
 	float TimeToNextShot;
+	int32 BulletsToShot;
 
 	FVector HitTarget;
+
+private:
+	UPROPERTY(EditAnywhere, Category = "Burst")
+	float ShotsPerSecond = 15.f;
+
+	UPROPERTY(EditAnywhere, Category = "Burst")
+	float BurstDuration = 2.f;
+	int ShotsInBurst;
+	FTimerHandle FireTimer;
+
+	UFUNCTION()
+	void AddCameraRecoilRotation(const FVector CameraRotation);
+
+	UPROPERTY();
+	float MinXRecoil = 0.1f;
+	UPROPERTY();
+	float MaxXRecoil = 0.2f;
+	UPROPERTY();
+	float MinYRecoil = -0.1f;
+	UPROPERTY();
+	float MaxYRecoil = 0.1f;
 
 public:	
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() { return WeaponMeshComponent; }
 	FORCEINLINE void SetHitTarget (FVector NewHitTarget) { HitTarget = NewHitTarget; }
+	FORCEINLINE void SetOwnerCharacter(ACharacter * NewOwner) { OwnerCharacter = NewOwner; }
+	
 };

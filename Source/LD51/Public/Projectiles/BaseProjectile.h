@@ -29,6 +29,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float InitialSpeed = 15000;
 
+	UPROPERTY(EditAnywhere)
+	float LifeTime = 10.f;
+
 protected:
 	virtual void BeginPlay() override;
 

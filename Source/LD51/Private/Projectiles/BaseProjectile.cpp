@@ -3,6 +3,7 @@
 #include "Projectiles/BaseProjectile.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Sound/SoundCue.h"
 #include <Kismet/GameplayStatics.h>
 
 ABaseProjectile::ABaseProjectile()
@@ -46,6 +47,7 @@ void ABaseProjectile::BeginPlay()
 	}
 
 	CollisionBox->OnComponentHit.AddDynamic(this, &ABaseProjectile::OnHit);
+	this->SetLifeSpan(LifeTime);
 }
 
 void ABaseProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -64,7 +66,7 @@ void ABaseProjectile::Destroyed()
 
 	if (ImpactSound)
 	{
-		//UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, GetActorLocation());
 	}
 }
 
