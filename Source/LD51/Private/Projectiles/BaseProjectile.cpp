@@ -5,7 +5,6 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Sound/SoundCue.h"
 #include <Kismet/GameplayStatics.h>
-#include <NiagaraFunctionLibrary.h>
 
 ABaseProjectile::ABaseProjectile()
 {
@@ -37,16 +36,16 @@ void ABaseProjectile::BeginPlay()
 
 	if (Tracer)
 	{
-		/*TracerComponent = UGameplayStatics::SpawnEmitterAttached(
+		TracerComponent = UGameplayStatics::SpawnEmitterAttached(
 			Tracer,
 			CollisionBox,
 			FName(),
 			GetActorLocation(),
 			GetActorRotation(),
 			EAttachLocation::KeepWorldPosition
-		);*/
+		);
 
-		TracerComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
+		/*TracerComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
 			Tracer,
 			CollisionBox,
 			FName(),
@@ -54,7 +53,7 @@ void ABaseProjectile::BeginPlay()
 			GetActorRotation(),
 			EAttachLocation::KeepWorldPosition,
 			false
-			);
+			);*/
 	}
 
 	CollisionBox->OnComponentHit.AddDynamic(this, &ABaseProjectile::OnHit);
@@ -72,13 +71,13 @@ void ABaseProjectile::Destroyed()
 
 	if (ImpactParticles)
 	{
-		//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticles, GetActorTransform());
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ImpactParticles, GetActorTransform().GetLocation());
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticles, GetActorTransform());
+		//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ImpactParticles, GetActorTransform().GetLocation());
 	}
 
 	if (ImpactSound)
 	{
-		//UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, GetActorLocation());
 	}
 }
 
