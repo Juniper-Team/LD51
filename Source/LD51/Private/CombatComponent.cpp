@@ -29,6 +29,7 @@ void UCombatComponent::SetEquippedWeapon(ABaseWeapon* NewWeapon, USkeletalMeshCo
 	if (WeaponSocket)
 	{
 		EquippedWeapon = NewWeapon;
+		EquippedWeapon->SetOwnerCharacter(OwnerCharacter);
 		WeaponSocket->AttachActor(NewWeapon, AttachMesh);
 		UE_LOG(LogTemp, Error, TEXT("Success!"));
 	}
@@ -38,18 +39,30 @@ void UCombatComponent::SetEquippedWeapon(ABaseWeapon* NewWeapon, USkeletalMeshCo
 	}
 }
 
+ABaseWeapon* UCombatComponent::GetEquippedWeapon()
+{
+	return EquippedWeapon;
+}
+
 void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	FHitResult HitResult;
-	TraceUnderCrosshairs(HitResult);
-	HitTarget = !HitResult.ImpactPoint.IsZero() ? HitResult.ImpactPoint : HitResult.TraceEnd;
 	if(EquippedWeapon)
 	{
+		if(EquippedWeapon->GunMode == EWeaponMode::EWM_Laser)
+		{
+			TraceUnderCrosshairs(HitResult, ECC_GameTraceChannel2);
+		}
+		else
+		{
+			TraceUnderCrosshairs(HitResult, ECC_Visibility);
+		}
+		HitTarget = !HitResult.ImpactPoint.IsZero() ? HitResult.ImpactPoint : HitResult.TraceEnd;
 		EquippedWeapon->SetHitTarget(HitTarget);
 	}
 }
 
-void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
+void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult, ECollisionChannel TraceChannel)
 {
 	FVector2D ViewportSize;
 	if (GEngine && GEngine->GameViewport)
@@ -69,8 +82,6 @@ void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 	if (bScreenToWorld)
 	{
 		FVector Start = CrosshairWorldPosition;
-
-
 		FVector End = Start + CrosshairWorldDirection * TraceLenght;
 
 		FCollisionQueryParams TraceParams;
@@ -79,7 +90,7 @@ void UCombatComponent::TraceUnderCrosshairs(FHitResult& TraceHitResult)
 			TraceHitResult,
 			Start,
 			End,
-			ECollisionChannel::ECC_Visibility,
+			TraceChannel,
 			TraceParams
 		);
 	}

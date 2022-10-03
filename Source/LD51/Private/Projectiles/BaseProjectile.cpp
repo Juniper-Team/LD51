@@ -3,6 +3,7 @@
 #include "Projectiles/BaseProjectile.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
+#include "Sound/SoundCue.h"
 #include <Kismet/GameplayStatics.h>
 
 ABaseProjectile::ABaseProjectile()
@@ -43,9 +44,20 @@ void ABaseProjectile::BeginPlay()
 			GetActorRotation(),
 			EAttachLocation::KeepWorldPosition
 		);
+
+		/*TracerComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
+			Tracer,
+			CollisionBox,
+			FName(),
+			GetActorLocation(),
+			GetActorRotation(),
+			EAttachLocation::KeepWorldPosition,
+			false
+			);*/
 	}
 
 	CollisionBox->OnComponentHit.AddDynamic(this, &ABaseProjectile::OnHit);
+	this->SetLifeSpan(LifeTime);
 }
 
 void ABaseProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -60,11 +72,12 @@ void ABaseProjectile::Destroyed()
 	if (ImpactParticles)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ImpactParticles, GetActorTransform());
+		//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ImpactParticles, GetActorTransform().GetLocation());
 	}
 
 	if (ImpactSound)
 	{
-		//UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactSound, GetActorLocation());
 	}
 }
 

@@ -29,11 +29,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	virtual void SetEquippedWeapon(ABaseWeapon* NewWeapon, USkeletalMeshComponent* AttachMesh, FName SocketName);
 
+	UFUNCTION(BlueprintCallable)
+	ABaseWeapon* GetEquippedWeapon();
+
 protected:
 	virtual void BeginPlay() override;
 
 private:
-	void TraceUnderCrosshairs(FHitResult& TraceHitResult);
+	void TraceUnderCrosshairs(FHitResult& TraceHitResult, ECollisionChannel TraceChannel);
 
 	ABaseWeapon* EquippedWeapon;
 	ACharacter* OwnerCharacter;
