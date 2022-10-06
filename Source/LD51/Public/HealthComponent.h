@@ -17,6 +17,9 @@ public:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	UFUNCTION(BlueprintNativeEvent)
+	void OnDeath();
+
 protected:
 	virtual void BeginPlay() override;
 

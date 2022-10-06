@@ -11,6 +11,7 @@ class ABaseProjectile;
 class USkeletalMeshComponent;
 class UStaticMeshComponent;
 class UNiagaraEmitter;
+class USoundCue;
 
 UENUM(BlueprintType)
 enum class EWeaponMode : uint8
@@ -109,6 +110,9 @@ private:
 	int ShotsInBurst;
 	FTimerHandle FireTimer;
 
+	UPROPERTY(EditAnywhere, Category = "Burst")
+	USoundCue* BulletShotSound;
+
 	UFUNCTION()
 	void AddCameraRecoilRotation(const FVector CameraRotation);
 
@@ -138,7 +142,16 @@ private:
 	UPROPERTY(EditAnywhere, Category = "LaserBeam")
 	float LaserDamage = 100.f;
 
+	UPROPERTY(EditAnywhere, Category = "LaserBeam")
+	USoundCue* LaserShotSound;
+
+	UPROPERTY(EditAnywhere, Category = "LaserBeam")
+	USoundCue* LaserEndShotSound;
+
 	bool bUpdateLaser = false;
+
+	UPROPERTY(EditAnywhere, Category = "Rocket")
+	USoundCue* RocketShotSound;
 
 	//UPROPERTY(EditAnywhere, Category = "LaserBeam")
 	//UNiagaraEmitter* LaserBeamEffect;

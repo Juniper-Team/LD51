@@ -36,6 +36,10 @@ void UHealthComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 	}
 }
 
+void UHealthComponent::OnDeath_Implementation()
+{
+}
+
 void UHealthComponent::OnTakeAnyDamageHandle(AActor* DamageActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
 	Health = FMath::Clamp(Health - Damage, 0.f, MaxHealth);
@@ -48,7 +52,7 @@ void UHealthComponent::OnTakeAnyDamageHandle(AActor* DamageActor, float Damage, 
 
 	if (Health <= 0.f)
 	{
-        GetOwner()->Destroy();
+        OnDeath();
 	}
 }
 

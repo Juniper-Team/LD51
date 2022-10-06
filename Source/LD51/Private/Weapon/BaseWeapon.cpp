@@ -7,6 +7,8 @@
 #include <GameFramework/Pawn.h>
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
+#include <Kismet/GameplayStatics.h>
+#include "Sound/SoundCue.h"
 
 
 // Sets default values
@@ -71,6 +73,10 @@ void ABaseWeapon::MakeShot()
 void ABaseWeapon::LaserShot()
 {
 	EnableLaser(true);
+	if (LaserShotSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), LaserShotSound, GetActorLocation());
+	}
 	GetWorldTimerManager().SetTimer(
 		FireTimer,
 		this,
@@ -84,6 +90,10 @@ void ABaseWeapon::StopLaser()
 	EnableLaser(false);
 	bIsFiring = false;
 	TimeToNextShot = TimeBetweenShots;
+	if (LaserEndShotSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), LaserEndShotSound, GetActorLocation());
+	}
 }
 
 void ABaseWeapon::UpdateLaser()
@@ -111,6 +121,10 @@ void ABaseWeapon::UpdateLaser()
 void ABaseWeapon::LauncherShot()
 {
 	SpawnProjectile(LauncherProjectile, HitTarget);
+	if (RocketShotSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), RocketShotSound, GetActorLocation());
+	}
 	TimeToNextShot = TimeBetweenShots;
 	bIsFiring = false;
 }
@@ -151,6 +165,12 @@ void ABaseWeapon::ShotBullet()
 	--BulletsToShot;
 	const FVector Recoil(FMath::RandRange(MinXRecoil, MaxXRecoil), FMath::RandRange(MinYRecoil, MaxYRecoil), 0.f);
 	AddCameraRecoilRotation(Recoil);
+
+	if (BulletShotSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(GetWorld(), BulletShotSound, GetActorLocation());
+	}
+
 	GetWorldTimerManager().SetTimer(
 		FireTimer,
 		this,
